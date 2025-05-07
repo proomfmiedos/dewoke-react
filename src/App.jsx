@@ -55,19 +55,24 @@ function App() {
       drawImage(img, text);
       const url = canvasRef.current.toDataURL('image/png');
       try {
+        console.log('Sending image to server...');
         const response = await fetch('https://image-backend-sbka.onrender.com/submit-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ image: url, text }),
         });
+        console.log('Server response status:', response.status);
+        const responseText = await response.text();
+        console.log('Server response:', responseText);
+        
         if (response.ok) {
           alert('Image submitted successfully!');
         } else {
-          alert('Failed to submit image. Please try again.');
+          alert(`Failed to submit image. Server returned: ${response.status} ${responseText}`);
         }
       } catch (error) {
         console.error('Error submitting image:', error);
-        alert('Error submitting image. Please try again.');
+        alert(`Error submitting image: ${error.message}`);
       }
     };
     img.src = previewUrl;
