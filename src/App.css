@@ -1,0 +1,143 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.gmr-container {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 2rem 1rem;
+  background: rgba(36,36,36,0.98);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.drop-area {
+  border: 2px dashed #2586e6;
+  border-radius: 16px;
+  padding: 32px 0;
+  margin-bottom: 1.2rem;
+  background: #181f2a;
+  color: #2586e6;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drop-area.has-image {
+  padding: 0;
+  background: #111;
+  border-style: solid;
+}
+.preview-img {
+  max-width: 100%;
+  max-height: 180px;
+  border-radius: 12px;
+  display: block;
+}
+.text-input {
+  width: 100%;
+  padding: 0.7em 1em;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 1px solid #2586e6;
+  margin-bottom: 1.2rem;
+  background: #222;
+  color: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+.download-btn {
+  width: 100%;
+  padding: 0.8em 0;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: none;
+  background: #2586e6;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.download-btn:disabled {
+  background: #444;
+  cursor: not-allowed;
+}
+.preview-label {
+  font-size: 1.1em;
+  color: #aaa;
+  margin-bottom: 0.5em;
+}
+.preview-box {
+  background: #181f2a;
+  border-radius: 12px;
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.preview-canvas-wrapper {
+  width: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-canvas {
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  background: #222;
+  width: 400px;
+  height: 400px;
+  display: block;
+}
