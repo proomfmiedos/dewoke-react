@@ -48,13 +48,29 @@ function App() {
   const canvasRef = useRef()
 
   const handleSubmit = async () => {
-    const url = canvasRef.current.toDataURL('image/png');
-    await fetch('https://image-backend-sbka.onrender.com/submit-image', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: url, text }),
-    });
-    alert('Image submitted!');
+    if (!previewUrl || !text) return;
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = async () => {
+      drawImage(img, text);
+      const url = canvasRef.current.toDataURL('image/png');
+      try {
+        const response = await fetch('https://image-backend-sbka.onrender.com/submit-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: url, text }),
+        });
+        if (response.ok) {
+          alert('Image submitted successfully!');
+        } else {
+          alert('Failed to submit image. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error submitting image:', error);
+        alert('Error submitting image. Please try again.');
+      }
+    };
+    img.src = previewUrl;
   };
 
   const handleDrop = (e) => {
