@@ -47,37 +47,6 @@ function App() {
   const fileInputRef = useRef()
   const canvasRef = useRef()
 
-  const handleSubmit = async () => {
-    if (!previewUrl || !text) return;
-    const img = new window.Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = async () => {
-      drawImage(img, text);
-      const url = canvasRef.current.toDataURL('image/png');
-      try {
-        console.log('Sending image to server...');
-        const response = await fetch('https://image-backend-sbka.onrender.com/submit-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: url, text }),
-        });
-        console.log('Server response status:', response.status);
-        const responseText = await response.text();
-        console.log('Server response:', responseText);
-        
-        if (response.ok) {
-          alert('Image submitted successfully!');
-        } else {
-          alert(`Failed to submit image. Server returned: ${response.status} ${responseText}`);
-        }
-      } catch (error) {
-        console.error('Error submitting image:', error);
-        alert(`Error submitting image: ${error.message}`);
-      }
-    };
-    img.src = previewUrl;
-  };
-
   const handleDrop = (e) => {
     e.preventDefault()
     const file = e.dataTransfer.files[0]
@@ -223,9 +192,6 @@ function App() {
         disabled={!previewUrl || !text}
       >
         Descargar imagen
-      </button>
-      <button onClick={handleSubmit} disabled={!previewUrl || !text}>
-        Submit
       </button>
       <canvas ref={canvasRef} width={800} height={800} style={{ display: 'none' }} />
       <div className="preview-label">Vista previa</div>
