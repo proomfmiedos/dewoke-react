@@ -117,26 +117,70 @@ function App() {
     ctx.closePath()
     ctx.fill()
     // Center 'WKE' in the rectangle
-    ctx.font = 'bold 44px system-ui, sans-serif'
-    ctx.fillStyle = '#fff'
+    ctx.font = '900 44px Inter, system-ui, sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
+    ctx.strokeStyle = '#000'
+    ctx.lineWidth = 6
+    ctx.strokeText('WKE', rectX + rectW / 2, rectY + rectH / 2)
+    ctx.fillStyle = '#fff'
     ctx.fillText('WKE', rectX + rectW / 2, rectY + rectH / 2)
     ctx.restore()
 
     // Draw bigger, left-aligned, wrapped text at bottom with more drop shadow
     if (text) {
       ctx.save()
-      ctx.font = 'bold 64px system-ui, sans-serif'
+      ctx.font = '600 64px Inter, system-ui, sans-serif'
       ctx.textAlign = 'left'
       ctx.textBaseline = 'bottom'
-      ctx.shadowColor = 'rgba(0,0,0,0.95)'
-      ctx.shadowBlur = 24
+      ctx.shadowColor = 'rgba(0,0,0,0.8)'
+      ctx.shadowBlur = 32
       ctx.shadowOffsetY = 8
       ctx.fillStyle = '#fff'
       const maxWidth = size - 96;
       const lineHeight = 72;
-      wrapText(ctx, text, 48, size - 48, maxWidth, lineHeight);
+      
+      // Draw text outline
+      ctx.strokeStyle = '#000'
+      ctx.lineWidth = 6
+      const drawText = (ctx, x, y, maxWidth, lineHeight) => {
+        const words = text.split(' ');
+        let line = '';
+        let lines = [];
+        for (let n = 0; n < words.length; n++) {
+          let word = words[n];
+          while (ctx.measureText(word).width > maxWidth) {
+            let fit = '';
+            for (let i = 0; i < word.length; i++) {
+              if (ctx.measureText(fit + word[i]).width > maxWidth) {
+                break;
+              }
+              fit += word[i];
+            }
+            if (fit.length === 0) break;
+            if (line.length > 0) lines.push(line);
+            lines.push(fit);
+            word = word.slice(fit.length);
+            line = '';
+          }
+          const testLine = line + word + ' ';
+          const metrics = ctx.measureText(testLine);
+          const testWidth = metrics.width;
+          if (testWidth > maxWidth && n > 0) {
+            lines.push(line);
+            line = word + ' ';
+          } else {
+            line = testLine;
+          }
+        }
+        lines.push(line);
+        for (let i = 0; i < lines.length; i++) {
+          ctx.strokeText(lines[i], x, y - (lines.length - 1 - i) * lineHeight);
+          ctx.fillText(lines[i], x, y - (lines.length - 1 - i) * lineHeight);
+        }
+      }
+      
+      drawText(ctx, 48, size - 48, maxWidth, lineHeight);
       ctx.restore()
     }
   }
@@ -158,50 +202,56 @@ function App() {
 
   return (
     <div className="gmr-container">
-      <h2>Generador de Imagen GMR</h2>
-      <div
-        className={`drop-area${previewUrl ? ' has-image' : ''}`}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onClick={() => fileInputRef.current.click()}
-      >
-        {previewUrl ? (
-          <img src={previewUrl} alt="Preview" className="preview-img" />
-        ) : (
-          <span>Soltá una imagen aquí o hacé click para elegir</span>
-        )}
-        <input
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          ref={fileInputRef}
-          onChange={handleFileChange}
-        />
-      </div>
-      <input
-        className="text-input"
-        type="text"
-        placeholder="Escribí tu texto..."
-        value={text}
-        onChange={handleTextChange}
-        maxLength={80}
-      />
-      <button
-        className="download-btn"
-        onClick={handleDownload}
-        disabled={!previewUrl || !text}
-      >
-        Descargar imagen
-      </button>
-      <canvas ref={canvasRef} width={800} height={800} style={{ display: 'none' }} />
-      <div className="preview-label">Vista previa</div>
-      <div className="preview-box">
-        <div className="preview-canvas-wrapper">
-          {previewUrl && text && (
-            <PreviewCanvas imgUrl={previewUrl} text={text} />
-          )}
+      <h1 className="rainbow-text">DEWOKE</h1>
+      <div className="sections-wrapper">
+        <div className="input-section">
+          <div
+            className={`drop-area${previewUrl ? ' has-image' : ''}`}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onClick={() => fileInputRef.current.click()}
+          >
+            {previewUrl ? (
+              <img src={previewUrl} alt="Preview" className="preview-img" />
+            ) : (
+              <span>Soltá una imagen aquí o hacé click para elegir</span>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
+          </div>
+          <input
+            className="text-input"
+            type="text"
+            placeholder="Escribí tu texto..."
+            value={text}
+            onChange={handleTextChange}
+            maxLength={80}
+          />
+          <button
+            className="download-btn"
+            onClick={handleDownload}
+            disabled={!previewUrl || !text}
+          >
+            Descargar imagen
+          </button>
+        </div>
+        <div className="preview-section">
+          <div className="preview-label">Vista previa</div>
+          <div className="preview-box">
+            <div className="preview-canvas-wrapper">
+              {previewUrl && text && (
+                <PreviewCanvas imgUrl={previewUrl} text={text} />
+              )}
+            </div>
+          </div>
         </div>
       </div>
+      <canvas ref={canvasRef} width={800} height={800} style={{ display: 'none' }} />
     </div>
   )
 }
@@ -251,25 +301,69 @@ function PreviewCanvas({ imgUrl, text }) {
       ctx.closePath()
       ctx.fill()
       // Center 'WKE' in the rectangle
-      ctx.font = 'bold 22px system-ui, sans-serif'
-      ctx.fillStyle = '#fff'
+      ctx.font = '900 22px Inter, system-ui, sans-serif'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
+      ctx.strokeStyle = '#000'
+      ctx.lineWidth = 3
+      ctx.strokeText('WKE', rectX + rectW / 2, rectY + rectH / 2)
+      ctx.fillStyle = '#fff'
       ctx.fillText('WKE', rectX + rectW / 2, rectY + rectH / 2)
       ctx.restore()
       // Draw bigger, left-aligned, wrapped text at bottom with more drop shadow
       if (text) {
         ctx.save()
-        ctx.font = 'bold 32px system-ui, sans-serif'
+        ctx.font = '600 32px Inter, system-ui, sans-serif'
         ctx.textAlign = 'left'
         ctx.textBaseline = 'bottom'
-        ctx.shadowColor = 'rgba(0,0,0,0.95)'
-        ctx.shadowBlur = 12
+        ctx.shadowColor = 'rgba(0,0,0,0.8)'
+        ctx.shadowBlur = 16
         ctx.shadowOffsetY = 4
         ctx.fillStyle = '#fff'
         const maxWidth = size - 48;
         const lineHeight = 36;
-        wrapText(ctx, text, 24, size - 24, maxWidth, lineHeight);
+        
+        // Draw text outline
+        ctx.strokeStyle = '#000'
+        ctx.lineWidth = 3
+        const drawText = (ctx, x, y, maxWidth, lineHeight) => {
+          const words = text.split(' ');
+          let line = '';
+          let lines = [];
+          for (let n = 0; n < words.length; n++) {
+            let word = words[n];
+            while (ctx.measureText(word).width > maxWidth) {
+              let fit = '';
+              for (let i = 0; i < word.length; i++) {
+                if (ctx.measureText(fit + word[i]).width > maxWidth) {
+                  break;
+                }
+                fit += word[i];
+              }
+              if (fit.length === 0) break;
+              if (line.length > 0) lines.push(line);
+              lines.push(fit);
+              word = word.slice(fit.length);
+              line = '';
+            }
+            const testLine = line + word + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+              lines.push(line);
+              line = word + ' ';
+            } else {
+              line = testLine;
+            }
+          }
+          lines.push(line);
+          for (let i = 0; i < lines.length; i++) {
+            ctx.strokeText(lines[i], x, y - (lines.length - 1 - i) * lineHeight);
+            ctx.fillText(lines[i], x, y - (lines.length - 1 - i) * lineHeight);
+          }
+        }
+        
+        drawText(ctx, 24, size - 24, maxWidth, lineHeight);
         ctx.restore()
       }
     }
